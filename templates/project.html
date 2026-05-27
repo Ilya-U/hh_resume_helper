@@ -22,7 +22,6 @@
             overflow-x: hidden;
         }
 
-        /* Анимированный градиентный фон */
         .animated-bg {
             position: fixed;
             top: 0;
@@ -33,14 +32,12 @@
             background: radial-gradient(circle at 20% 30%, rgba(85, 139, 236, 0.08) 0%, rgba(45, 85, 175, 0.03) 80%);
         }
 
-        /* контейнер */
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 2rem 2rem 3rem;
         }
 
-        /* хедер с анимацией */
         .hero {
             text-align: center;
             margin-bottom: 3rem;
@@ -67,14 +64,6 @@
             margin-left: auto;
             margin-right: auto;
             font-weight: 500;
-        }
-
-        /* карточки */
-        .grid-2col {
-            display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            gap: 2rem;
-            margin-bottom: 2rem;
         }
 
         .card {
@@ -113,33 +102,6 @@
             color: #142745;
         }
 
-        /* загрузка файлов */
-        .upload-area {
-            border: 2px dashed #9bb6e0;
-            border-radius: 1.5rem;
-            padding: 1.8rem 1rem;
-            text-align: center;
-            transition: all 0.2s ease;
-            cursor: pointer;
-            background: rgba(245, 250, 255, 0.5);
-        }
-
-        .upload-area.drag-over {
-            border-color: #2a5fcf;
-            background: rgba(42, 95, 207, 0.05);
-            transform: scale(0.99);
-        }
-
-        .upload-icon {
-            font-size: 2.8rem;
-            color: #2a5fcf;
-            margin-bottom: 0.8rem;
-        }
-
-        .file-input {
-            display: none;
-        }
-
         .btn-primary {
             background: linear-gradient(100deg, #1e3b70, #2a5298);
             border: none;
@@ -162,6 +124,13 @@
             box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
         }
 
+        .btn-primary:disabled {
+            background: #93a3c0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
         .btn-outline {
             background: transparent;
             border: 1px solid #2a5fcf;
@@ -177,34 +146,6 @@
             background: #eef3ff;
         }
 
-        /* парсинг результат */
-        .parsed-data {
-            background: #ffffffcc;
-            border-radius: 1.5rem;
-            padding: 1.2rem;
-            font-size: 0.9rem;
-            margin-top: 1.2rem;
-        }
-
-        .data-row {
-            display: flex;
-            flex-wrap: wrap;
-            border-bottom: 1px solid #e2e8f0;
-            padding: 0.7rem 0;
-        }
-
-        .data-label {
-            font-weight: 700;
-            width: 110px;
-            color: #1f3a6b;
-        }
-
-        .data-value {
-            flex: 1;
-            color: #1e293b;
-        }
-
-        /* таблица заявок */
         .applications-table-wrapper {
             overflow-x: auto;
             border-radius: 1.2rem;
@@ -243,7 +184,7 @@
             color: #1e3b70;
         }
 
-        .badge.new {
+        .badge.submitted {
             background: #dbeafe;
             color: #1e40af;
         }
@@ -251,7 +192,7 @@
             background: #fff3e3;
             color: #b45309;
         }
-        .badge.done {
+        .badge.processed {
             background: #e0f2fe;
             color: #0e6b8c;
         }
@@ -259,7 +200,7 @@
             background: #ffe4e2;
             color: #b91c1c;
         }
-        .badge.sent {
+        .badge.approved {
             background: #dcfce7;
             color: #15803d;
         }
@@ -273,7 +214,7 @@
         .icon-btn {
             background: none;
             border: none;
-            font-size: 1rem;
+            font-size: 0.95rem;
             cursor: pointer;
             padding: 5px 8px;
             border-radius: 40px;
@@ -286,12 +227,16 @@
             transform: scale(1.05);
         }
 
-        /* добавление резюме облако - заглушка */
-        .cloud-mock {
+        .icon-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .cloud-sync-section {
             background: #eef3ffc9;
             border-radius: 1rem;
-            padding: 0.8rem;
-            margin-top: 1rem;
+            padding: 1.2rem 1.5rem;
+            margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -299,9 +244,49 @@
             gap: 12px;
         }
 
-        .cloud-mock span {
-            font-size: 0.85rem;
+        .cloud-sync-section span {
+            font-size: 0.9rem;
             font-weight: 500;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #1e3b70;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 0.8rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .toast.error {
+            background: #b91c1c;
+        }
+
+        .toast.success {
+            background: #15803d;
+        }
+
+        footer {
+            margin-top: 2.5rem;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #5b6e8c;
         }
 
         @keyframes fadeSlideDown {
@@ -314,33 +299,25 @@
             100% { background-position: 200% 50%;}
         }
 
-        @keyframes pulseGlow {
-            0% { box-shadow: 0 0 0 0 rgba(42, 95, 207, 0.3);}
-            70% { box-shadow: 0 0 0 8px rgba(42, 95, 207, 0);}
-            100% { box-shadow: 0 0 0 0 rgba(42, 95, 207, 0);}
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
-        .animate-pulse {
-            animation: pulseGlow 1.5s infinite;
-        }
-
-        footer {
-            margin-top: 2.5rem;
-            text-align: center;
-            font-size: 0.8rem;
-            color: #5b6e8c;
+        @keyframes slideIn {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
         @media (max-width: 900px) {
-            .grid-2col {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
             .container {
                 padding: 1.2rem;
             }
             .hero h1 {
                 font-size: 2rem;
+            }
+            .cloud-sync-section {
+                flex-direction: column;
+                align-items: flex-start;
             }
         }
     </style>
@@ -350,337 +327,352 @@
 <div class="container">
     <div class="hero">
         <h1><i class="fas fa-file-alt"></i> AI Resume Parser</h1>
-        <p>Автоматическое извлечение и структурирование данных из резюме (PDF) • Отслеживание заявок из облака</p>
+        <p>Отслеживание статусов заявок кандидатов • Синхронизация с облачным хранилищем</p>
     </div>
 
-    <div class="grid-2col">
-        <!-- ЛЕВАЯ КОЛОНКА: Парсинг резюме + загрузка PDF -->
-        <div class="card">
-            <div class="card-header">
-                <i class="fas fa-upload"></i>
-                <h2>Загрузить резюме</h2>
-            </div>
-            <div class="upload-area" id="dropZone">
-                <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
-                <p style="font-weight: 500;">Перетащите PDF или нажмите для выбора</p>
-                <p style="font-size: 0.75rem; margin-top: 8px;">Поддерживаются .pdf, резюме кандидатов</p>
-                <input type="file" id="fileInput" accept="application/pdf" class="file-input">
-                <button class="btn-primary" id="selectFileBtn" style="margin-top: 16px;"><i class="fas fa-folder-open"></i> Выбрать файл</button>
-            </div>
+    <!-- Основная карточка со списком заявок -->
+    <div class="card">
+        <div class="card-header">
+            <i class="fas fa-tasks"></i>
+            <h2>Заявки кандидатов</h2>
+            <span style="margin-left: auto; font-size: 0.8rem;" id="applicationsCount">0 заявок</span>
+        </div>
 
-            <!-- Результат парсинга (структурированные данные) -->
-            <div id="parsedResult" class="parsed-data" style="display: none;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                    <strong><i class="fas fa-code-branch"></i> Структурированные данные</strong>
-                    <span id="parseStatusBadge" class="badge new" style="background:#d9f0ec;">✅ обработано</span>
-                </div>
-                <div id="structuredContent"></div>
-            </div>
-            <div class="cloud-mock" style="margin-top: 1rem;">
-                <span><i class="fas fa-cloud-arrow-up"></i> ☁️ Облачный источник (заготовка):</span>
-                <span class="badge">авто-импорт заявок готов</span>
-                <button id="mockCloudFetchBtn" class="btn-outline" style="padding: 0.3rem 0.8rem;"><i class="fas fa-sync-alt"></i> Синхр.</button>
+        <!-- Секция синхронизации с облаком -->
+        <div class="cloud-sync-section">
+            <span><i class="fas fa-cloud-arrow-up"></i> ☁️ Синхронизация с сервером:</span>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button id="syncFromServerBtn" class="btn-primary">
+                    <i class="fas fa-download"></i> Загрузить заявки с сервера
+                </button>
+                <button id="mockCloudAddBtn" class="btn-outline" style="padding: 0.5rem 1rem;">
+                    <i class="fas fa-plus-circle"></i> Тестовая заявка
+                </button>
             </div>
         </div>
 
-        <!-- ПРАВАЯ КОЛОНКА: Список заявок и отслеживание статусов -->
-        <div class="card">
-            <div class="card-header">
-                <i class="fas fa-tasks"></i>
-                <h2>Заявки кандидатов</h2>
-                <span style="margin-left: auto; font-size: 0.8rem;" id="applicationsCount">0 заявок</span>
-            </div>
-            <div class="applications-table-wrapper">
-                <table class="status-table">
-                    <thead>
-                        <tr><th>Кандидат / должность</th><th>Статус</th><th>Действия</th></tr>
-                    </thead>
-                    <tbody id="applicationsTableBody">
-                        <tr><td colspan="3" style="text-align: center; padding: 2rem;">Нет заявок. Загрузите резюме или нажмите "Синхронизация облака"</td></tr>
-                    </tbody>
-                </table>
-            </div>
-            <div style="margin-top: 1rem; display: flex; justify-content: flex-end;">
-                <button id="clearAllApps" class="btn-outline" style="border-color:#ccd7f0;"><i class="fas fa-trash-alt"></i> Очистить историю</button>
-            </div>
+        <div class="applications-table-wrapper">
+            <table class="status-table">
+                <thead>
+                    <tr>
+                        <th>Кандидат / должность</th>
+                        <th>Email</th>
+                        <th>Статус</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody id="applicationsTableBody">
+                    <tr>
+                        <td colspan="4" style="text-align: center; padding: 2rem;">
+                            <i class="fas fa-inbox" style="font-size: 2rem; color: #9bb6e0; display: block; margin-bottom: 0.8rem;"></i>
+                            Нет заявок. Нажмите "Загрузить заявки с сервера" для синхронизации
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div style="margin-top: 1rem; display: flex; justify-content: flex-end; gap: 10px;">
+            <button id="refreshBtn" class="btn-outline" title="Обновить список с сервера">
+                <i class="fas fa-sync-alt"></i> Обновить
+            </button>
+            <button id="clearAllApps" class="btn-outline" style="border-color:#e0c7c7; color:#b91c1c;">
+                <i class="fas fa-trash-alt"></i> Очистить локально
+            </button>
         </div>
     </div>
 
     <footer>
-        <i class="fas fa-robot"></i> Система парсинга резюме (PDF → структура) • Статус-менеджер заявок • Интеграция с облаком (заготовка)
+        <i class="fas fa-robot"></i> Система управления заявками • Статус-менеджер • Интеграция с API сервера
     </footer>
 </div>
 
 <script>
-    // ---------- ХРАНИЛИЩЕ ЗАЯВОК (каждая заявка = объект) ----------
-    let applications = [];   // { id, name, position, email, phone, skills, rawTextPreview, status, createdAt }
+    // ---------- КОНФИГУРАЦИЯ API ----------
+    const API_BASE_URL = 'http://localhost:8000/api';  // Измените на ваш URL
 
-    // Статусы по порядку (для кнопок)
-    const statusFlow = ["new", "processing", "done", "rejected", "sent"];
-    const statusLabels = {
-        new: "📥 Заявка поступила",
-        processing: "⚙️ В обработке",
-        done: "✅ Обработана",
-        rejected: "❌ Отказано",
-        sent: "🚀 Отправлена дальше"
-    };
-    const badgeClass = {
-        new: "badge new",
-        processing: "badge processing",
-        done: "badge done",
-        rejected: "badge rejected",
-        sent: "badge sent"
+    // ---------- ЛОКАЛЬНОЕ ХРАНИЛИЩЕ ЗАЯВОК ----------
+    let applications = [];
+
+    // Статусы (должны соответствовать бэкенду)
+    const STATUS_MAP = {
+        'submitted': { label: '📥 Заявка поступила', badgeClass: 'badge submitted', icon: 'fa-inbox' },
+        'processing': { label: '⚙️ В обработке', badgeClass: 'badge processing', icon: 'fa-spinner fa-pulse' },
+        'processed': { label: '✅ Обработана', badgeClass: 'badge processed', icon: 'fa-check-circle' },
+        'rejected': { label: '❌ Отказано', badgeClass: 'badge rejected', icon: 'fa-times-circle' },
+        'approved': { label: '🚀 Одобрено', badgeClass: 'badge approved', icon: 'fa-paper-plane' }
     };
 
-    // Функция для рендера таблицы
+    const STATUS_FLOW = ['submitted', 'processing', 'processed', 'rejected', 'approved'];
+
+    // ---------- ФУНКЦИИ ДЛЯ РАБОТЫ С API ----------
+
+    // Получить список всех резюме с сервера
+    async function fetchResumesFromServer() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/resumes/`);
+            if (!response.ok) {
+                throw new Error(`Ошибка сервера: ${response.status}`);
+            }
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Ошибка при загрузке резюме:', error);
+            showToast('Не удалось загрузить заявки с сервера. Проверьте подключение.', 'error');
+            return null;
+        }
+    }
+
+    // Обновить статус резюме на сервере
+    async function updateResumeStatusOnServer(resumeId, newStatus) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/resumes/${resumeId}/status/`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ status: newStatus })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.status || `Ошибка сервера: ${response.status}`);
+            }
+
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Ошибка при обновлении статуса:', error);
+            showToast(`Не удалось обновить статус: ${error.message}`, 'error');
+            return null;
+        }
+    }
+
+    // ---------- ФУНКЦИИ ОТОБРАЖЕНИЯ ----------
+
     function renderApplications() {
         const tbody = document.getElementById('applicationsTableBody');
         const countSpan = document.getElementById('applicationsCount');
         if (!tbody) return;
+
         if (applications.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 2rem;">Нет заявок. Загрузите резюме или нажмите "Синхронизация облака"</td></tr>`;
-            countSpan.innerText = `0 заявок`;
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="4" style="text-align: center; padding: 2rem;">
+                        <i class="fas fa-inbox" style="font-size: 2rem; color: #9bb6e0; display: block; margin-bottom: 0.8rem;"></i>
+                        Нет заявок. Нажмите "Загрузить заявки с сервера" для синхронизации
+                    </td>
+                </tr>`;
+            countSpan.innerText = '0 заявок';
             return;
         }
+
         countSpan.innerText = `${applications.length} заявок`;
-        tbody.innerHTML = "";
+        tbody.innerHTML = '';
+
         applications.forEach(app => {
             const row = tbody.insertRow();
+
             // Информация о кандидате
             const infoCell = row.insertCell(0);
-            infoCell.innerHTML = `<strong>${escapeHtml(app.name || "Не указано")}</strong><br><span style="font-size:0.7rem; color:#4a627a;">${escapeHtml(app.position || "Должность не указана")}</span><br><span style="font-size:0.7rem;"><i class="fas fa-envelope"></i> ${escapeHtml(app.email || "-")}</span>`;
-            
-            const statusCell = row.insertCell(1);
-            const currentStatus = app.status;
-            statusCell.innerHTML = `<div class="${badgeClass[currentStatus]}"><i class="fas ${getStatusIcon(currentStatus)}"></i> ${statusLabels[currentStatus]}</div>`;
-            
-            const actionsCell = row.insertCell(2);
-            actionsCell.className = "status-actions";
-            // Кнопки для перехода по статусам (вперед/назад для гибкости)
-            const currentIdx = statusFlow.indexOf(currentStatus);
-            const prevStatus = currentIdx > 0 ? statusFlow[currentIdx-1] : null;
-            const nextStatus = currentIdx < statusFlow.length-1 ? statusFlow[currentIdx+1] : null;
-            
-            let btnsHtml = `<div class="status-actions">`;
-            if (prevStatus) {
-                btnsHtml += `<button class="icon-btn" title="${statusLabels[prevStatus]}" data-id="${app.id}" data-newstatus="${prevStatus}"><i class="fas fa-chevron-left"></i></button>`;
+            infoCell.innerHTML = `
+                <strong>${escapeHtml(app.applicant_name || 'Не указано')}</strong><br>
+                <span style="font-size:0.75rem; color:#4a627a;">${escapeHtml(app.position || 'Должность не указана')}</span>`;
+
+            // Email
+            const emailCell = row.insertCell(1);
+            emailCell.innerHTML = `<span style="font-size:0.8rem;"><i class="fas fa-envelope"></i> ${escapeHtml(app.email || '-')}</span>`;
+
+            // Статус
+            const statusCell = row.insertCell(2);
+            const statusInfo = STATUS_MAP[app.status] || STATUS_MAP['submitted'];
+            statusCell.innerHTML = `
+                <div class="${statusInfo.badgeClass}">
+                    <i class="fas ${statusInfo.icon}"></i> ${statusInfo.label}
+                </div>`;
+
+            // Действия
+            const actionsCell = row.insertCell(3);
+            actionsCell.className = 'status-actions';
+
+            const currentIdx = STATUS_FLOW.indexOf(app.status);
+            let btnsHtml = '<div class="status-actions">';
+
+            // Кнопка "Назад" по статусу
+            if (currentIdx > 0) {
+                const prevStatus = STATUS_FLOW[currentIdx - 1];
+                const prevInfo = STATUS_MAP[prevStatus];
+                btnsHtml += `
+                    <button class="icon-btn change-status-btn"
+                            data-id="${app.id}"
+                            data-newstatus="${prevStatus}"
+                            title="Вернуть: ${prevInfo.label}">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>`;
             }
-            if (nextStatus) {
-                btnsHtml += `<button class="icon-btn" title="${statusLabels[nextStatus]}" data-id="${app.id}" data-newstatus="${nextStatus}"><i class="fas fa-chevron-right"></i> ${statusLabels[nextStatus].substring(0,2)}</button>`;
+
+            // Кнопка "Вперёд" по статусу
+            if (currentIdx < STATUS_FLOW.length - 1) {
+                const nextStatus = STATUS_FLOW[currentIdx + 1];
+                const nextInfo = STATUS_MAP[nextStatus];
+                btnsHtml += `
+                    <button class="icon-btn change-status-btn"
+                            data-id="${app.id}"
+                            data-newstatus="${nextStatus}"
+                            title="Перевести: ${nextInfo.label}">
+                        <i class="fas fa-chevron-right"></i> ${nextInfo.label.substring(0, 2)}
+                    </button>`;
             }
-            btnsHtml += `<button class="icon-btn" style="color:#c00;" data-id="${app.id}" data-delete="true" title="Удалить заявку"><i class="fas fa-trash"></i></button>`;
-            btnsHtml += `</div>`;
+
+            btnsHtml += '</div>';
             actionsCell.innerHTML = btnsHtml;
         });
-        
-        // Добавляем события после рендера
-        document.querySelectorAll('[data-id]').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const id = parseInt(btn.getAttribute('data-id'));
-                const newStatus = btn.getAttribute('data-newstatus');
-                const isDelete = btn.getAttribute('data-delete') === 'true';
-                if (isDelete) {
-                    applications = applications.filter(a => a.id !== id);
-                    renderApplications();
-                    saveToLocal();
-                } else if (newStatus) {
-                    const appIndex = applications.findIndex(a => a.id === id);
-                    if (appIndex !== -1) {
-                        applications[appIndex].status = newStatus;
-                        renderApplications();
-                        saveToLocal();
-                    }
-                }
+
+        // Навешиваем обработчики на кнопки изменения статуса
+        document.querySelectorAll('.change-status-btn').forEach(btn => {
+            btn.addEventListener('click', async function() {
+                const resumeId = this.getAttribute('data-id');
+                const newStatus = this.getAttribute('data-newstatus');
+                await handleStatusChange(resumeId, newStatus);
             });
         });
     }
 
-    function getStatusIcon(status) {
-        switch(status) {
-            case 'new': return 'fa-inbox';
-            case 'processing': return 'fa-spinner fa-pulse';
-            case 'done': return 'fa-check-circle';
-            case 'rejected': return 'fa-times-circle';
-            case 'sent': return 'fa-paper-plane';
-            default: return 'fa-circle';
+    // ---------- ОБРАБОТЧИКИ ДЕЙСТВИЙ ----------
+
+    async function handleStatusChange(resumeId, newStatus) {
+        // Отключаем все кнопки на время запроса
+        const allButtons = document.querySelectorAll('.change-status-btn');
+        allButtons.forEach(btn => btn.disabled = true);
+
+        // Отправляем запрос на сервер
+        const result = await updateResumeStatusOnServer(resumeId, newStatus);
+
+        if (result) {
+            // Обновляем локальные данные
+            const appIndex = applications.findIndex(a => a.id == resumeId);
+            if (appIndex !== -1) {
+                applications[appIndex].status = newStatus;
+                renderApplications();
+                saveToLocal();
+                showToast(`Статус изменён на "${STATUS_MAP[newStatus].label}"`, 'success');
+            }
         }
+
+        // Включаем кнопки обратно
+        allButtons.forEach(btn => btn.disabled = false);
     }
 
-    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;});}
-    
-    function saveToLocal() { localStorage.setItem('resume_applications', JSON.stringify(applications)); }
-    function loadFromLocal() {
-        const stored = localStorage.getItem('resume_applications');
-        if(stored) {
-            try{
-                applications = JSON.parse(stored);
-                renderApplications();
-            } catch(e) {}
-        } else {
-            // Несколько демо-заявок для примера интерфейса
-            applications = [
-                { id: Date.now()+1, name: "Анна Смирнова", position: "Data Scientist", email: "anna.s@example.com", phone: "+7 999 123-45-67", skills: "Python, SQL, ML", rawTextPreview: "", status: "new", createdAt: new Date().toISOString() },
-                { id: Date.now()+2, name: "Дмитрий Козлов", position: "Java-разработчик", email: "dkozlov@example.com", phone: "+7 912 345-67-89", skills: "Spring, Hibernate", rawTextPreview: "", status: "processing", createdAt: new Date().toISOString() },
-                { id: Date.now()+3, name: "Елена Петрова", position: "HR Generalist", email: "e.petrova@corp.com", phone: "+7 901 234-56-78", skills: "рекрутинг, оценка", rawTextPreview: "", status: "done", createdAt: new Date().toISOString() },
-            ];
+    async function syncFromServer() {
+        const syncBtn = document.getElementById('syncFromServerBtn');
+        const originalHtml = syncBtn.innerHTML;
+        syncBtn.disabled = true;
+        syncBtn.innerHTML = '<span class="loading-spinner"></span> Загрузка...';
+
+        const serverData = await fetchResumesFromServer();
+
+        if (serverData !== null) {
+            // Обновляем локальные данные данными с сервера
+            applications = serverData.map(item => ({
+                id: item.id,
+                applicant_name: item.applicant_name,
+                position: item.position,
+                email: item.email,
+                status: item.status,
+                created_at: item.created_at
+            }));
+
             renderApplications();
             saveToLocal();
+            showToast(`Загружено ${applications.length} заявок с сервера`, 'success');
         }
+
+        syncBtn.disabled = false;
+        syncBtn.innerHTML = originalHtml;
     }
 
-    // ---- ИМИТАЦИЯ ПАРСИНГА PDF (извлечение структурированных данных) ----
-    // В реальной системе будет backend, но для демо - симуляция из текста / имени файла и мок-данных
-    async function parseResumeFromPDF(file) {
-        // Имитируем асинхронную обработку: читаем как ArrayBuffer и извлекаем "магически"
-        // Для демонстрации сгенерируем данные на основе имени файла и случайных профессиональных навыков
-        return new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                // Симуляция извлечения: генерируем правдоподобные данные
-                const fileName = file.name.replace('.pdf', '').replace(/[_-]/g, ' ');
-                let extractedName = fileName.split(' ').slice(0,2).join(' ') || "Кандидат";
-                if(extractedName.length < 3) extractedName = "Алексей Иванов";
-                const positionsList = ["Frontend-разработчик", "Backend Engineer", "Project Manager", "UI/UX Designer", "Аналитик данных", "DevOps инженер"];
-                const randomPos = positionsList[Math.floor(Math.random() * positionsList.length)];
-                const emailDomain = ["gmail.com", "yandex.ru", "company.ru"];
-                const randomMail = `${extractedName.toLowerCase().replace(/ /g, '.')}@${emailDomain[Math.floor(Math.random()*emailDomain.length)]}`;
-                const skillsList = ["JavaScript/TS", "React", "Node.js", "Python", "Docker", "SQL", "Tableau", "Figma"];
-                const skillsSample = skillsList.slice(0, 3+Math.floor(Math.random()*3)).join(', ');
-                const structured = {
-                    fullName: extractedName,
-                    position: randomPos,
-                    email: randomMail,
-                    phone: `+7 (9${Math.floor(100+Math.random()*900)}) ${Math.floor(100+Math.random()*900)}-${Math.floor(10+Math.random()*90)}-${Math.floor(10+Math.random()*90)}`,
-                    skills: skillsSample,
-                    experience: `${Math.floor(Math.random()*8)+1} года опыта в IT`,
-                    education: "Высшее техническое (имитация парсинга)"
-                };
-                resolve(structured);
-            };
-            reader.readAsArrayBuffer(file);
+    // ---------- ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ----------
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
         });
     }
 
-    // Добавление заявки на основе распарсенных данных
-    function addApplicationFromParsed(structuredData, originalFile) {
-        const newId = Date.now();
-        const newApp = {
-            id: newId,
-            name: structuredData.fullName,
-            position: structuredData.position,
-            email: structuredData.email,
-            phone: structuredData.phone,
-            skills: structuredData.skills,
-            rawTextPreview: `Опыт: ${structuredData.experience}, образование: ${structuredData.education}`,
-            status: "new",
-            createdAt: new Date().toISOString()
-        };
-        applications.unshift(newApp);
-        renderApplications();
-        saveToLocal();
-        return newApp;
-    }
+    function showToast(message, type = 'info') {
+        // Удаляем старые тосты
+        const oldToast = document.querySelector('.toast');
+        if (oldToast) oldToast.remove();
 
-    // отображение структурированных данных в левой панели
-    function showStructuredData(data) {
-        const parsedDiv = document.getElementById('parsedResult');
-        const contentDiv = document.getElementById('structuredContent');
-        if(!parsedDiv || !contentDiv) return;
-        contentDiv.innerHTML = `
-            <div class="data-row"><div class="data-label">ФИО:</div><div class="data-value">${escapeHtml(data.fullName)}</div></div>
-            <div class="data-row"><div class="data-label">Должность:</div><div class="data-value">${escapeHtml(data.position)}</div></div>
-            <div class="data-row"><div class="data-label">Email:</div><div class="data-value">${escapeHtml(data.email)}</div></div>
-            <div class="data-row"><div class="data-label">Телефон:</div><div class="data-value">${escapeHtml(data.phone)}</div></div>
-            <div class="data-row"><div class="data-label">Навыки:</div><div class="data-value">${escapeHtml(data.skills)}</div></div>
-            <div class="data-row"><div class="data-label">Опыт:</div><div class="data-value">${escapeHtml(data.experience)}</div></div>
-        `;
-        parsedDiv.style.display = "block";
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+        document.body.appendChild(toast);
+
         setTimeout(() => {
-            document.getElementById('parseStatusBadge')?.classList.add('animate-pulse');
-            setTimeout(() => document.getElementById('parseStatusBadge')?.classList.remove('animate-pulse'), 800);
-        }, 100);
+            toast.style.opacity = '0';
+            toast.style.transition = 'opacity 0.3s';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
     }
 
-    // обработка загруженного pdf-файла
-    async function handlePDF(file) {
-        if (!file || file.type !== 'application/pdf') {
-            alert("Пожалуйста, загрузите PDF-файл с резюме");
-            return;
+    function saveToLocal() {
+        localStorage.setItem('resume_applications_server', JSON.stringify(applications));
+    }
+
+    function loadFromLocal() {
+        const stored = localStorage.getItem('resume_applications_server');
+        if (stored) {
+            try {
+                applications = JSON.parse(stored);
+                renderApplications();
+                showToast('Заявки загружены из локального хранилища', 'info');
+            } catch (e) {
+                console.error('Ошибка загрузки из localStorage:', e);
+            }
         }
-        // Показать индикацию
-        const parseDiv = document.getElementById('parsedResult');
-        if(parseDiv) parseDiv.style.display = "none";
-        // Парсим (симуляция)
-        const structured = await parseResumeFromPDF(file);
-        showStructuredData(structured);
-        // автоматически создаем заявку
-        addApplicationFromParsed(structured, file);
-        // дополнительный визуальный фидбек
-        const dropZone = document.getElementById('dropZone');
-        dropZone.style.transition = "0.2s";
-        dropZone.style.backgroundColor = "#e9f3ff";
-        setTimeout(() => dropZone.style.backgroundColor = "", 300);
     }
 
-    // drag & drop
-    const dropZone = document.getElementById('dropZone');
-    const fileInput = document.getElementById('fileInput');
-    const selectBtn = document.getElementById('selectFileBtn');
-    
-    selectBtn.addEventListener('click', () => fileInput.click());
-    fileInput.addEventListener('change', (e) => {
-        if(e.target.files.length) handlePDF(e.target.files[0]);
-        fileInput.value = '';
-    });
-    
-    dropZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dropZone.classList.add('drag-over');
-    });
-    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-    dropZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropZone.classList.remove('drag-over');
-        const files = e.dataTransfer.files;
-        if(files.length && files[0].type === 'application/pdf') handlePDF(files[0]);
-        else alert("Пожалуйста, перетащите PDF-файл");
-    });
+    // ---------- ОБРАБОТЧИКИ КНОПОК ----------
 
-    // Облачная синхронизация (заготовка) — имитируем добавление "облачных" заявок
-    document.getElementById('mockCloudFetchBtn')?.addEventListener('click', () => {
-        // Симуляция получения новых заявок из облачного хранилища (Google Drive / S3 заглушка)
-        const cloudMockNames = ["Мария Соколова", "Игорь Ткачев", "Ольга Морозова", "Павел Громов"];
-        const positionsMock = ["Системный аналитик", "ML Engineer", "Product Owner", "Tech Lead"];
-        const newCloudApp = {
-            id: Date.now(),
-            name: cloudMockNames[Math.floor(Math.random()*cloudMockNames.length)],
-            position: positionsMock[Math.floor(Math.random()*positionsMock.length)],
-            email: `cloud_${Math.floor(Math.random()*1000)}@cloudstorage.com`,
-            phone: "+7 800 555-XX-XX",
-            skills: "Cloud skills, автоматизация",
-            rawTextPreview: "Заявка из облачного брокера (demo)",
-            status: "new",
-            createdAt: new Date().toISOString()
+    document.getElementById('syncFromServerBtn')?.addEventListener('click', syncFromServer);
+
+    document.getElementById('refreshBtn')?.addEventListener('click', syncFromServer);
+
+    document.getElementById('mockCloudAddBtn')?.addEventListener('click', () => {
+        // Добавляем тестовую заявку локально (имитация получения из облака)
+        const mockApp = {
+            id: Date.now(),  // Временный ID для демо
+            applicant_name: ['Мария Соколова', 'Игорь Ткачев', 'Ольга Морозова', 'Павел Громов'][Math.floor(Math.random() * 4)],
+            position: ['Системный аналитик', 'ML Engineer', 'Product Owner', 'Tech Lead'][Math.floor(Math.random() * 4)],
+            email: `cloud_${Math.floor(Math.random() * 1000)}@cloudstorage.com`,
+            status: 'submitted',
+            created_at: new Date().toISOString()
         };
-        applications.unshift(newCloudApp);
+        applications.unshift(mockApp);
         renderApplications();
         saveToLocal();
-        // Визуальное уведомление
-        const cloudSpan = document.querySelector('.cloud-mock span');
-        if(cloudSpan) cloudSpan.innerHTML = '<i class="fas fa-check-circle"></i> ☁️ Заявка синхронизирована!';
-        setTimeout(() => { if(cloudSpan) cloudSpan.innerHTML = '<i class="fas fa-cloud-arrow-up"></i> ☁️ Облачный источник (заготовка):'; }, 2000);
+        showToast('Тестовая заявка добавлена (только локально)', 'info');
     });
-    
+
     document.getElementById('clearAllApps')?.addEventListener('click', () => {
-        if(confirm("Удалить все заявки? Данные будут очищены.")) {
+        if (confirm('Удалить все локальные данные? Это не затронет сервер.')) {
             applications = [];
             renderApplications();
             saveToLocal();
+            showToast('Локальные данные очищены', 'info');
         }
     });
-    
-    // инициализация
+
+    // Инициализация
     loadFromLocal();
+
+    // Автоматическая синхронизация при загрузке страницы (опционально)
+    // syncFromServer();
 </script>
 </body>
 </html>
