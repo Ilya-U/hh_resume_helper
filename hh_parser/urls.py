@@ -19,10 +19,12 @@ from xml.etree.ElementInclude import include
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView
-
+from hh_app.views import signup_view, login_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', TemplateView.as_view(template_name='project.html')),
-    path('api/', include('hh_app.urls'))
+    path('api/', include('hh_app.urls')),
+    path('signup/', signup_view, name='signup'),
+    path('login/', login_view, name='login'),
 ]
