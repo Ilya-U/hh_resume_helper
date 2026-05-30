@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Resume Parser | Умная система обработки резюме</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f7fc 0%, #eef2f9 100%);
+            color: #1a2634;
+            min-height: 100vh;
+        }
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: radial-gradient(circle at 30% 40%, rgba(66, 133, 244, 0.08) 0%, rgba(45, 85, 175, 0.03) 80%);
+        }
+        .container { max-width: 1400px; margin: 0 auto; padding: 1.5rem 2rem 2rem; }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1E3C72, #2A5298);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .logo p { font-size: 0.8rem; color: #5b6e8c; }
+        .user-info {
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(8px);
+            padding: 0.5rem 1.2rem;
+            border-radius: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .btn-logout {
+            background: none;
+            border: none;
+            color: #dc3545;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255,255,255,0.6);
+            transition: all 0.2s;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1.2rem;
+            border-bottom: 2px solid rgba(66, 133, 244, 0.2);
+            padding-bottom: 0.7rem;
+        }
+        .card-header i { font-size: 1.6rem; color: #2a5fcf; }
+        .upload-area {
+            border: 2px dashed #9bb6e0;
+            border-radius: 1.2rem;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: rgba(245, 250, 255, 0.6);
+        }
+        .upload-area.drag-over { border-color: #2a5fcf; background: rgba(42, 95, 207, 0.08); }
+        .file-input { display: none; }
+        .btn-primary {
+            background: linear-gradient(100deg, #1e3b70, #2a5298);
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #2a5fcf;
+            padding: 0.4rem 1.2rem;
+            border-radius: 2rem;
+            color: #2a5fcf;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .table-wrapper { overflow-x: auto; }
+        .status-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .status-table th { text-align: left; padding: 0.8rem; background: #eef3fc; color: #1f3a6b; }
+        .status-table td { padding: 0.8rem; border-bottom: 1px solid #e2edf7; }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0.3rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            width: fit-content;
+        }
+        .badge.new { background: #dbeafe; color: #1e40af; }
+        .badge.processing { background: #fff3e3; color: #b45309; }
+        .badge.done { background: #e0f2fe; color: #0e6b8c; }
+        .badge.rejected { background: #ffe4e2; color: #b91c1c; }
+        .badge.sent { background: #dcfce7; color: #15803d; }
+        .filter-bar {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+        .filter-input {
+            flex: 1;
+            padding: 0.6rem 1rem;
+            border-radius: 2rem;
+            border: 1px solid #cbd5e1;
+            font-family: inherit;
+        }
+        .login-container { max-width: 450px; margin: 3rem auto; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 1.2rem;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .login-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 2rem;
+            padding: 2rem;
+        }
+        @media (max-width: 768px) { .container { padding: 1rem; } }
+    </style>
+</head>
+<body>
+<div class="animated-bg"></div>
+<div class="container" id="app">
+    <!-- Состояние: не авторизован (форма входа) -->
+    <div id="loginSection">
+        <div class="login-container">
+            <div class="login-card">
+                <div class="card-header" style="justify-content: center;">
+                    <i class="fas fa-robot"></i>
+                    <h2>Вход в систему</h2>
+                </div>
+                <form id="loginForm">
+                    <div class="mb-3" style="margin-bottom: 1rem;">
+                        <label>Имя пользователя или Email</label>
+                        <input type="text" id="loginUsername" class="filter-input" style="width:100%;" placeholder="Введите логин или email" required>
+                    </div>
+                    <div class="mb-3" style="margin-bottom: 1rem;">
+                        <label>Пароль</label>
+                        <input type="password" id="loginPassword" class="filter-input" style="width:100%;" placeholder="Введите пароль" required>
+                    </div>
+                    <button type="submit" class="btn-primary" style="width:100%"><i class="fas fa-key"></i> Войти</button>
+                    <p class="text-center" style="margin-top:1rem; text-align:center;">
+                        Нет аккаунта? <a href="register.html" style="color:#2a5fcf;">Зарегистрироваться</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Основное приложение (после логина) -->
+    <div id="mainApp" style="display:none;">
+        <div class="header">
+            <div class="logo">
+                <h1><i class="fas fa-file-alt"></i> AI Resume Parser</h1>
+                <p>Автоматический парсинг PDF • Отслеживание заявок</p>
+            </div>
+            <div class="user-info">
+                <span><i class="fas fa-user-circle"></i> <span id="currentUserName">Пользователь</span></span>
+                <button id="logoutBtn" class="btn-logout"><i class="fas fa-sign-out-alt"></i> Выйти</button>
+            </div>
+        </div>
+
+        <!-- Поиск и фильтры -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-filter"></i>
+                <h3>Фильтрация резюме</h3>
+            </div>
+            <div class="filter-bar">
+                <input type="text" id="filterKeywords" class="filter-input" placeholder="🔍 Ключевые слова (Python, аналитика...)">
+                <select id="filterStatus" class="filter-input">
+                    <option value="">Все статусы</option>
+                    <option value="new">📥 Поступила</option>
+                    <option value="processing">⚙️ В обработке</option>
+                    <option value="done">✅ Обработана</option>
+                    <option value="rejected">❌ Отказано</option>
+                    <option value="sent">🚀 Отправлена дальше</option>
+                </select>
+                <input type="text" id="filterPosition" class="filter-input" placeholder="Должность (разработчик...)">
+                <button id="applyFiltersBtn" class="btn-primary">Применить</button>
+            </div>
+        </div>
+
+        <!-- Статистика -->
+        <div class="stats-grid" id="statsPanel"></div>
+
+        <!-- Загрузка резюме -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <h3>Загрузить резюме (PDF)</h3>
+            </div>
+            <div class="upload-area" id="dropZone">
+                <i class="fas fa-file-pdf" style="font-size: 2rem; color:#2a5fcf;"></i>
+                <p>Перетащите PDF или нажмите для выбора</p>
+                <input type="file" id="fileInput" accept="application/pdf" class="file-input">
+                <button class="btn-primary" id="selectFileBtn" style="margin-top: 10px;"><i class="fas fa-folder-open"></i> Выбрать файл</button>
+            </div>
+            <div id="parsedPreview" style="margin-top: 1rem; background: #f8fafc; border-radius: 1rem; padding: 1rem; display: none;">
+                <strong><i class="fas fa-microchip"></i> Структурированные данные (распаршено):</strong>
+                <div id="parsedContent" style="margin-top: 0.5rem;"></div>
+            </div>
+        </div>
+
+        <!-- Список заявок -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-tasks"></i>
+                <h3>Заявки кандидатов</h3>
+                <span style="margin-left:auto;" id="applicationsCount"></span>
+            </div>
+            <div class="table-wrapper">
+                <table class="status-table">
+                    <thead>
+                        <tr><th>Кандидат / Должность</th><th>Статус</th><th>Действия</th></tr>
+                    </thead>
+                    <tbody id="applicationsTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ---------- Глобальное состояние ----------
+    let applications = [];
+    let currentUser = null;
+    let currentFilters = { keywords: "", status: "", position: "" };
+
+    const STATUS_LIST = ["new", "processing", "done", "rejected", "sent"];
+    const STATUS_LABELS = {
+        new: "📥 Заявка поступила",
+        processing: "⚙️ В обработке",
+        done: "✅ Обработана",
+        rejected: "❌ Отказано",
+        sent: "🚀 Отправлена дальше"
+    };
+    const BADGE_CLASS = {
+        new: "badge new",
+        processing: "badge processing",
+        done: "badge done",
+        rejected: "badge rejected",
+        sent: "badge sent"
+    };
+
+    function saveToLocal() {
+        if (currentUser) {
+            localStorage.setItem(`resume_app_${currentUser.id}`, JSON.stringify(applications));
+        }
+    }
+
+    function loadFromLocal() {
+        if (currentUser) {
+            const saved = localStorage.getItem(`resume_app_${currentUser.id}`);
+            if (saved) {
+                applications = JSON.parse(saved);
+            } else {
+                // Демо-данные
+                applications = [
+                    { id: Date.now()+1, name: "Анна Смирнова", position: "Data Scientist", email: "anna@example.com", phone: "+7 999 123-45-67", skills: "Python, SQL, ML", experience: "3 года", status: "new", createdAt: new Date().toISOString() },
+                    { id: Date.now()+2, name: "Дмитрий Козлов", position: "Java-разработчик", email: "dmitry@example.com", phone: "+7 912 345-67-89", skills: "Spring, Hibernate", experience: "5 лет", status: "processing", createdAt: new Date().toISOString() },
+                    { id: Date.now()+3, name: "Елена Петрова", position: "HR Generalist", email: "elena@corp.com", phone: "+7 901 234-56-78", skills: "рекрутинг, оценка", experience: "4 года", status: "done", createdAt: new Date().toISOString() }
+                ];
+                saveToLocal();
+            }
+        }
+    }
+
+    // Парсинг PDF (имитация)
+    async function parsePdfMock(file) {
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const fileName = file.name.replace('.pdf', '').replace(/[_-]/g, ' ');
+                let extractedName = fileName.split(' ').slice(0,2).join(' ') || "Кандидат";
+                if(extractedName.length < 3) extractedName = "Алексей Иванов";
+                const positions = ["Frontend-разработчик", "Backend Engineer", "Project Manager", "UI/UX Designer", "Аналитик данных"];
+                const randomPos = positions[Math.floor(Math.random() * positions.length)];
+                const email = `${extractedName.toLowerCase().replace(/ /g, '.')}@example.com`;
+                const phone = `+7 (9${Math.floor(100+Math.random()*900)}) ${Math.floor(100+Math.random()*900)}-${Math.floor(10+Math.random()*90)}-${Math.floor(10+Math.random()*90)}`;
+                const skillsList = ["JavaScript/TS", "React", "Node.js", "Python", "Docker", "SQL", "Figma"];
+                const skillsSample = skillsList.slice(0, 3+Math.floor(Math.random()*2)).join(', ');
+                resolve({
+                    fullName: extractedName,
+                    position: randomPos,
+                    email: email,
+                    phone: phone,
+                    skills: skillsSample,
+                    experience: `${Math.floor(Math.random()*6)+1} года опыта в IT`,
+                    education: "Высшее техническое (парсинг из PDF)"
+                });
+            };
+            reader.readAsArrayBuffer(file);
+        });
+    }
+
+    function addApplication(data) {
+        const newApp = {
+            id: Date.now(),
+            name: data.fullName,
+            position: data.position,
+            email: data.email,
+            phone: data.phone,
+            skills: data.skills,
+            experience: data.experience,
+            education: data.education,
+            status: "new",
+            createdAt: new Date().toISOString()
+        };
+        applications.unshift(newApp);
+        saveToLocal();
+        renderAll();
+        return newApp;
+    }
+
+    function updateStatus(appId, newStatus) {
+        const app = applications.find(a => a.id == appId);
+        if (app && STATUS_LIST.includes(newStatus)) {
+            app.status = newStatus;
+            saveToLocal();
+            renderAll();
+        }
+    }
+
+    function deleteApplication(appId) {
+        applications = applications.filter(a => a.id != appId);
+        saveToLocal();
+        renderAll();
+    }
+
+    function getFilteredApps() {
+        return applications.filter(app => {
+            const matchKeyword = !currentFilters.keywords || 
+                (app.name + " " + app.position + " " + (app.skills || "")).toLowerCase().includes(currentFilters.keywords.toLowerCase());
+            const matchStatus = !currentFilters.status || app.status === currentFilters.status;
+            const matchPosition = !currentFilters.position || app.position.toLowerCase().includes(currentFilters.position.toLowerCase());
+            return matchKeyword && matchStatus && matchPosition;
+        });
+    }
+
+    function renderStats(filteredApps) {
+        const total = filteredApps.length;
+        const newCount = filteredApps.filter(a => a.status === 'new').length;
+        const processing = filteredApps.filter(a => a.status === 'processing').length;
+        const done = filteredApps.filter(a => a.status === 'done').length;
+        const rejected = filteredApps.filter(a => a.status === 'rejected').length;
+        const sent = filteredApps.filter(a => a.status === 'sent').length;
+        document.getElementById("statsPanel").innerHTML = `
+            <div class="stat-card"><strong>📊 Всего</strong><br><h3>${total}</h3></div>
+            <div class="stat-card"><strong>📥 Поступило</strong><br><h3>${newCount}</h3></div>
+            <div class="stat-card"><strong>⚙️ В обработке</strong><br><h3>${processing}</h3></div>
+            <div class="stat-card"><strong>✅ Обработано</strong><br><h3>${done}</h3></div>
+            <div class="stat-card"><strong>🚀 Отправлено</strong><br><h3>${sent}</h3></div>
+            <div class="stat-card"><strong>❌ Отказано</strong><br><h3>${rejected}</h3></div>
+        `;
+        document.getElementById("applicationsCount").innerText = `Найдено: ${total}`;
+    }
+
+    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+
+    function renderTable(filteredApps) {
+        const tbody = document.getElementById("applicationsTableBody");
+        if (filteredApps.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;">Нет заявок по выбранным фильтрам</td></tr>`;
+            return;
+        }
+        tbody.innerHTML = "";
+        filteredApps.forEach(app => {
+            const row = tbody.insertRow();
+            row.insertCell(0).innerHTML = `<strong>${escapeHtml(app.name)}</strong><br><span style="font-size:0.75rem;">${escapeHtml(app.position)}</span><br><span style="font-size:0.7rem;"><i class="fas fa-envelope"></i> ${escapeHtml(app.email)}</span>`;
+            row.insertCell(1).innerHTML = `<div class="${BADGE_CLASS[app.status]}"><i class="fas ${app.status === 'processing' ? 'fa-spinner fa-pulse' : 'fa-circle'}"></i> ${STATUS_LABELS[app.status]}</div>`;
+            const actionsCell = row.insertCell(2);
+            let btns = `<div style="display:flex; gap:6px; flex-wrap:wrap;">`;
+            const idx = STATUS_LIST.indexOf(app.status);
+            if (idx > 0) btns += `<button class="btn-outline" style="padding:4px 10px;" data-id="${app.id}" data-newstatus="${STATUS_LIST[idx-1]}"><i class="fas fa-chevron-left"></i> Назад</button>`;
+            if (idx < STATUS_LIST.length-1) btns += `<button class="btn-outline" style="padding:4px 10px;" data-id="${app.id}" data-newstatus="${STATUS_LIST[idx+1]}">Вперед <i class="fas fa-chevron-right"></i></button>`;
+            btns += `<button class="btn-outline" style="border-color:#dc3545; color:#dc3545;" data-id="${app.id}" data-delete="1"><i class="fas fa-trash"></i> Удалить</button>`;
+            btns += `</div>`;
+            actionsCell.innerHTML = btns;
+        });
+        document.querySelectorAll('[data-id]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const id = parseInt(btn.getAttribute('data-id'));
+                const newStatus = btn.getAttribute('data-newstatus');
+                const isDel = btn.getAttribute('data-delete') === '1';
+                if (isDel) deleteApplication(id);
+                else if (newStatus) updateStatus(id, newStatus);
+            });
+        });
+    }
+
+    function renderAll() {
+        const filtered = getFilteredApps();
+        renderStats(filtered);
+        renderTable(filtered);
+    }
+
+    async function handlePDF(file) {
+        if (!file || file.type !== 'application/pdf') { alert("Пожалуйста, загрузите PDF файл"); return; }
+        const parsed = await parsePdfMock(file);
+        const previewDiv = document.getElementById("parsedPreview");
+        const contentDiv = document.getElementById("parsedContent");
+        contentDiv.innerHTML = `
+            <div><strong>ФИО:</strong> ${escapeHtml(parsed.fullName)}</div>
+            <div><strong>Должность:</strong> ${escapeHtml(parsed.position)}</div>
+            <div><strong>Email:</strong> ${escapeHtml(parsed.email)}</div>
+            <div><strong>Телефон:</strong> ${escapeHtml(parsed.phone)}</div>
+            <div><strong>Навыки:</strong> ${escapeHtml(parsed.skills)}</div>
+            <div><strong>Опыт:</strong> ${escapeHtml(parsed.experience)}</div>
+        `;
+        previewDiv.style.display = "block";
+        addApplication(parsed);
+    }
+
+    // Авторизация
+    function login(loginInput, password) {
+        const users = JSON.parse(localStorage.getItem('resume_users') || '[]');
+        const user = users.find(u => (u.username === loginInput || u.email === loginInput) && u.password === password);
+        if (user) {
+            currentUser = user;
+            localStorage.setItem('resume_current_user', JSON.stringify({ id: user.id, username: user.username }));
+            document.getElementById("loginSection").style.display = "none";
+            document.getElementById("mainApp").style.display = "block";
+            document.getElementById("currentUserName").innerText = user.username;
+            loadFromLocal();
+            renderAll();
+        } else {
+            alert('Неверный логин или пароль');
+        }
+    }
+
+    function logout() {
+        currentUser = null;
+        localStorage.removeItem('resume_current_user');
+        document.getElementById("loginSection").style.display = "block";
+        document.getElementById("mainApp").style.display = "none";
+        applications = [];
+    }
+
+    // Проверка сохранённой сессии
+    const savedSession = localStorage.getItem('resume_current_user');
+    if (savedSession) {
+        try {
+            const sessionData = JSON.parse(savedSession);
+            const users = JSON.parse(localStorage.getItem('resume_users') || '[]');
+            const user = users.find(u => u.id === sessionData.id);
+            if (user) {
+                currentUser = user;
+                document.getElementById("loginSection").style.display = "none";
+                document.getElementById("mainApp").style.display = "block";
+                document.getElementById("currentUserName").innerText = user.username;
+                loadFromLocal();
+                renderAll();
+            } else {
+                document.getElementById("loginSection").style.display = "block";
+            }
+        } catch(e) { document.getElementById("loginSection").style.display = "block"; }
+    } else {
+        document.getElementById("loginSection").style.display = "block";
+    }
+
+    // События
+    document.getElementById("loginForm")?.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const loginVal = document.getElementById("loginUsername").value.trim();
+        const pwd = document.getElementById("loginPassword").value;
+        login(loginVal, pwd);
+    });
+    document.getElementById("logoutBtn")?.addEventListener("click", logout);
+
+    const dropZone = document.getElementById("dropZone");
+    const fileInput = document.getElementById("fileInput");
+    document.getElementById("selectFileBtn")?.addEventListener("click", () => fileInput.click());
+    fileInput?.addEventListener("change", (e) => { if(e.target.files.length) handlePDF(e.target.files[0]); fileInput.value = ''; });
+    if(dropZone) {
+        dropZone.addEventListener("dragover", (e) => { e.preventDefault(); dropZone.classList.add("drag-over"); });
+        dropZone.addEventListener("dragleave", () => dropZone.classList.remove("drag-over"));
+        dropZone.addEventListener("drop", (e) => { e.preventDefault(); dropZone.classList.remove("drag-over"); const files = e.dataTransfer.files; if(files.length && files[0].type === "application/pdf") handlePDF(files[0]); else alert("Только PDF"); });
+    }
+
+    document.getElementById("applyFiltersBtn")?.addEventListener("click", () => {
+        currentFilters = {
+            keywords: document.getElementById("filterKeywords").value,
+            status: document.getElementById("filterStatus").value,
+            position: document.getElementById("filterPosition").value
+        };
+        renderAll();
+    });
+    if (currentUser) { currentFilters = { keywords: "", status: "", position: "" }; renderAll(); }
+</script>
+</body>
+</html>
